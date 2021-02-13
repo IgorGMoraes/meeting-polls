@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 @Data
@@ -15,19 +17,17 @@ public class Vote {
     @Id
     private UUID id;
 
-    @ManyToOne
-    private Poll poll;
+    private UUID pollId;
 
     @ManyToOne
     private Associate associate;
     private boolean choice;
 
-    public Vote(Poll poll, boolean choice, Associate associate) {
+    public Vote(UUID pollId, boolean choice, Associate associate) {
         this.id = UUID.randomUUID();
-        this.poll = poll;
+        this.pollId = pollId;
         this.choice = choice;
         this.associate = associate;
     }
-
 
 }

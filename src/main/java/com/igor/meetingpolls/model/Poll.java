@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -20,8 +20,14 @@ public class Poll {
     private String title;
     private Status status = Status.NEW;
 
-    @OneToMany
-    private List<Vote> votes;
-    private Result result;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Vote> votes = new ArrayList<>();
+
+    // > 0 = ACCEPTED, < 0 = REJECTED, == 0 = DRAW
+    private int result = 0;
+
+    public void addVote(Vote vote){
+        votes.add(vote);
+    }
 
 }

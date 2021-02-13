@@ -1,6 +1,6 @@
 package com.igor.meetingpolls.model;
 
-enum Status{
+public enum Status{
     NEW,
     OPEN,
     CLOSED

@@ -1,6 +1,5 @@
 package com.igor.meetingpolls.service;
 
-import com.igor.meetingpolls.configuration.RabbitConfig;
 import com.igor.meetingpolls.constants.Constants;
 import com.igor.meetingpolls.exception.ForbiddenException;
 import com.igor.meetingpolls.exception.ResourceNotFoundException;
@@ -8,13 +7,10 @@ import com.igor.meetingpolls.model.*;
 import com.igor.meetingpolls.repository.AssociateRepository;
 import com.igor.meetingpolls.repository.PollRepository;
 import com.igor.meetingpolls.repository.VoteRepository;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import netscape.security.ForbiddenTargetException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -43,27 +39,30 @@ public class VoteServiceImpl implements VoteService {
             associate = associateRepository.findByCpf(cpf);
         } else {
             log.info("Creating new associate");
-            associateRepository.save(new Associate(cpf));
+            associate = new Associate(cpf);
         }
 
-        validateAssociateBeforeVoting(cpf, poll, associate);
-
-        associate.getPolls().add(poll);
+        validateVote(cpf, poll, associate);
         log.info("associate {}", associate);
 
-        Vote vote = new Vote(poll, voteRequest.isChoice(), associate);
-        log.info("Vote: {}", vote);
+        associateRepository.save(associate);
+
+        Vote vote = new Vote(poll.getId(), voteRequest.isChoice(), associate);
+//        log.info("Vote: {}", vote);
         rabbitTemplate.convertAndSend(Constants.EXCHANGE, Constants.ROUTING_KEY, vote);
         return vote;
     }
 
-    private void validateAssociateBeforeVoting(String cpf, Poll poll, Associate associate) {
+    private void validateVote(String cpf, Poll poll, Associate associate) {
         log.info("Validating vote");
+        if (poll.getStatus()!=Status.OPEN){
+            throw new ForbiddenException("This poll is not available to be voted");
+        }
+        if (poll.getVotes().stream().anyMatch(vote -> vote.getAssociate().equals(associate))) {
+            throw new ForbiddenException("The associate with cpf " + cpf + " had already voted for the poll " + poll.getTitle());
+        }
         if (!cpfValidatorService.isValidCpf(cpf)) {
             throw new ResourceNotFoundException("The associate with cpf " + cpf + " isn't able to vote.");
-        }
-        if (associate.getPolls().contains(poll)) {
-            throw new ForbiddenException("The associate with cpf " + cpf + " had already voted for the poll " + poll.getTitle());
         }
     }
 }
