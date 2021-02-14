@@ -1,9 +1,9 @@
 package com.igor.meetingpolls.controller.v1;
 
 import com.igor.meetingpolls.model.Poll;
-import com.igor.meetingpolls.repository.PollRepository;
 import com.igor.meetingpolls.service.PollService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,23 +14,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PollController {
 
-    private final PollRepository pollRepository;
     private final PollService pollService;
 
     @PostMapping("/")
-    public Poll createPoll(@RequestBody Poll poll){
-        return pollRepository.save(poll);
+    public ResponseEntity<Poll> createPoll(@RequestBody Poll poll) {
+        return ResponseEntity.ok(pollService.save(poll));
     }
 
     @GetMapping("/")
-    public List<Poll> getPolls(){
-        return pollRepository.findAll();
+    public ResponseEntity<List<Poll>> getPolls() {
+        return ResponseEntity.ok(pollService.findAll());
     }
 
     @PutMapping("/openVotation/{pollId}")
-    public void openVotation(@PathVariable String pollId,
-                                       @RequestBody(required = false) Optional<Integer> minutes){
-        pollService.openPollForVotation(pollId, minutes);
-//        return null;
+    public ResponseEntity<String> openVotation(@PathVariable String pollId,
+                                               @RequestBody(required = false) Optional<Integer> minutes) {
+        pollService.openPollForVote(pollId, minutes);
+        return ResponseEntity.ok("Poll with id " + pollId + "is open to be voted.");
     }
 }

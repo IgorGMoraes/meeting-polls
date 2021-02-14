@@ -16,11 +16,10 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class VoteConsumer {
 
-    private final VoteRepository voteRepository;
     private final PollRepository pollRepository;
 
     @RabbitListener(queues = Constants.QUEUE)
-    public void calculateResultAndSaveVoteFromQueue(Vote vote){
+    public void calculateResultAndSaveVoteFromQueue(Vote vote) {
         log.info("Saving vote with id {} to poll with id {}", vote.getId(), vote.getPollId());
         Poll poll = pollRepository.findById(vote.getPollId())
                 .orElseThrow(() -> new ResourceNotFoundException("Poll doesn't exist."));
@@ -29,7 +28,6 @@ public class VoteConsumer {
         pollRepository.save(poll);
     }
 
-    //Update the result as the votes are accounted
     private int calculateResultFromNewVote(Vote vote, int result) {
         return vote.isChoice() ? result + 1 : result - 1;
     }

@@ -1,11 +1,11 @@
 package com.igor.meetingpolls.constants;
 
-public interface Constants {
+public final class Constants {
 
-    String QUEUE = "voting_queue";
-    String EXCHANGE = "voting_exchange";
-    String ROUTING_KEY = "voting_routingKey";
+    public static final String QUEUE = "voting_queue";
+    public static final String EXCHANGE = "voting_exchange";
+    public static final String ROUTING_KEY = "voting_routingKey";
 
-    String CPI_VALIDATOR_URL = "https://user-info.herokuapp.com/users/{cpf}";
-    String ABLE_TO_VOTE = "ABLE_TO_VOTE";
+    public static final String CPI_VALIDATOR_URL = "https://user-info.herokuapp.com/users/{cpf}";
+    public static final String ABLE_TO_VOTE = "ABLE_TO_VOTE";
 }

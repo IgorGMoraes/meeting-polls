@@ -1,5 +1,6 @@
 package com.igor.meetingpolls.model;
 
+import com.igor.meetingpolls.constants.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class Poll {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
 
-    // > 0 = ACCEPTED, < 0 = REJECTED, == 0 = DRAW
+    // > 0: ACCEPTED, < 0: REJECTED, == 0: DRAW
     private int result = 0;
 
     public void addVote(Vote vote){

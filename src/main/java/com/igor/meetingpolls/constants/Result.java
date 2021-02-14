@@ -1,4 +1,4 @@
-package com.igor.meetingpolls.model;
+package com.igor.meetingpolls.constants;
 
 public enum Result {
     ACCEPTED,

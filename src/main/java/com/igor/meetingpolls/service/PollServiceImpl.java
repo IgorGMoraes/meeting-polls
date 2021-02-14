@@ -2,16 +2,13 @@ package com.igor.meetingpolls.service;
 
 import com.igor.meetingpolls.exception.ResourceNotFoundException;
 import com.igor.meetingpolls.model.Poll;
-import com.igor.meetingpolls.model.Status;
+import com.igor.meetingpolls.constants.Status;
 import com.igor.meetingpolls.repository.PollRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +17,17 @@ public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
 
     @Override
-    public void openPollForVotation(String pollId, Optional<Integer> minutes) {
+    public Poll save(Poll poll) {
+        return pollRepository.save(poll);
+    }
+
+    @Override
+    public List<Poll> findAll() {
+        return pollRepository.findAll();
+    }
+
+    @Override
+    public void openPollForVote(String pollId, Optional<Integer> minutes) {
         Poll poll = pollRepository.findById(UUID.fromString(pollId))
                 .orElseThrow(() -> new ResourceNotFoundException("Poll doesn't exist."));
 
@@ -30,7 +37,7 @@ public class PollServiceImpl implements PollService {
     }
 
     private void closePollAfterTime(Optional<Integer> minutes, Poll poll) {
-        long delay = 6000;
+        long delay = 60000;
         if (minutes.isPresent() && minutes.get() > 0) {
             delay *= minutes.get();
         }
@@ -45,6 +52,6 @@ public class PollServiceImpl implements PollService {
                 poll.setStatus(Status.CLOSED);
                 pollRepository.save(poll);
             }
-        }, 6000);
+        }, delay);
     }
 }
