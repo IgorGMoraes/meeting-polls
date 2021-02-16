@@ -12,13 +12,11 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Associate {
     @Id
+    @GeneratedValue(generator = "UUID")
     private UUID id;
     private String cpf;
 
-    public Associate(String cpf) {
-        this.id = UUID.randomUUID();
-        this.cpf = cpf;
-    }
 }

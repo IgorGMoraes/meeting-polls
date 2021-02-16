@@ -2,6 +2,7 @@ package com.igor.meetingpolls.model;
 
 import com.igor.meetingpolls.constants.Status;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,11 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Poll {
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;
     private String title;
+    @Builder.Default
     private Status status = Status.NEW;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

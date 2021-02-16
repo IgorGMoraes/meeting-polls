@@ -37,7 +37,11 @@ public class VoteServiceImpl implements VoteService {
         validateVote(cpf, poll, associate);
         associateRepository.save(associate);
 
-        Vote vote = new Vote(poll.getId(), voteRequest.isChoice(), associate);
+        Vote vote = Vote.builder()
+                .pollId(UUID.fromString(pollId))
+                .associate(associate)
+                .choice(voteRequest.isChoice())
+                .build();
         rabbitTemplate.convertAndSend(Constants.EXCHANGE, Constants.ROUTING_KEY, vote);
         return vote;
     }
@@ -48,7 +52,7 @@ public class VoteServiceImpl implements VoteService {
             associate = associateRepository.findByCpf(cpf);
         } else {
             log.info("Creating new associate");
-            associate = new Associate(cpf);
+            associate = Associate.builder().cpf(cpf).build();
         }
     }
 
