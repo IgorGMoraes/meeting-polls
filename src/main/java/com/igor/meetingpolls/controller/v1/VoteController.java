@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/vote")
+@RequestMapping("/api/v1/vote")
 @RequiredArgsConstructor
 public class VoteController {
 
