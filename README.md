@@ -12,6 +12,7 @@ This solution must be executed in the cloud and promote the following specificat
 
 ****
 #### Requests:
+You can find them in [swagger](http://localhost:8080/swagger-ui.html) while the project is running or below:
 - Create a poll:
 POST /v1/poll/  
 Body:
